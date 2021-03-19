@@ -20,14 +20,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     .then((res) => res.json())
     .then(
       (result) => {
-        console.log(result.result.data[0].data)
+        // console.log(result.result.data[0].data)
+        console.log('id = ' + id)
+
+        console.log(result.result)
         const response = result.result.data[0].data
 
         res.status(200).json({ response })
       },
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
       (error) => {
         res.status(404).json({ error })
       }
