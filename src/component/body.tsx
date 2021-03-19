@@ -21,13 +21,13 @@ const body = (): React.ReactElement => {
     //   )
   }, [])
 
-  const handleChange = (checked: boolean, prefCode: number) => {
+  const handleChange = async (checked: boolean, prefCode: number) => {
     if (checked) {
       if (!selectedCheckBox.includes(prefCode)) {
         setselectedCheckBox([...selectedCheckBox, prefCode])
       }
       if (!loadedPrefData.has(prefCode)) {
-        fetch('/api/prefPopulation/' + prefCode)
+        await fetch('/api/prefPopulation/' + prefCode)
           .then((res) => res.json())
           .then((res) => {
             setLoadedPrefData((oldData) => {
@@ -38,7 +38,7 @@ const body = (): React.ReactElement => {
               )
               return newData
             })
-            ShowgrafDetas()
+            // ShowgrafDetas()
           })
       }
 
@@ -47,11 +47,13 @@ const body = (): React.ReactElement => {
       setselectedCheckBox(selectedCheckBox.filter((code) => code !== prefCode))
       console.log(loadedPrefData)
     }
-    ShowgrafDetas()
+    // ShowgrafDetas()
   }
 
-  const ShowgrafDetas = () => {
+  // 人口推移のgrafを表示できるように変換するところ  チェックボックスの選択するところが更新されると実行される
+  useEffect(() => {
     let returnValue: any = []
+
     selectedCheckBox.map((code) => {
       console.log(code)
       const PopulationData = loadedPrefData.get(code)
@@ -59,8 +61,7 @@ const body = (): React.ReactElement => {
       console.log(loadedPrefData.get(code))
     })
     setPopulationData(returnValue)
-    return returnValue
-  }
+  })
 
   const options = {
     chart: {
@@ -96,7 +97,7 @@ const body = (): React.ReactElement => {
         text: 'Fruit eaten',
       },
     },
-    series: PopulationData,
+    series: PopulationData[0],
 
     // series: loadedPrefData,
   }
