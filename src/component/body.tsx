@@ -91,6 +91,9 @@ const body = (): React.ReactElement => {
       text: '各都道府県の人口推移',
     },
     xAxis: {
+      title: {
+        text: '年',
+      },
       categories: [
         '1960年',
         '1965年',
@@ -166,8 +169,10 @@ const body = (): React.ReactElement => {
       <style jsx>{`
         .checkBody {
           width: 100%;
+          border: 1px solid #888;
         }
         .checkBoxs {
+          border: 1px solid #888;
           display: flex;
           justify-content: flex-start;
           -webkit-flex-wrap: wrap;
