@@ -3,6 +3,17 @@ import React, { useState, useEffect } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
+// interface APIkeyPrpps {
+//   headers: { 'X-API-KEY': string }
+// }
+// const API_key: APIkeyPrpps = {
+//   headers: {
+//     'X-API-KEY': process.env.NEXT_PUBLIC_RESAS_API_KEY
+//       ? process.env.NEXT_PUBLIC_RESAS_API_KEY
+//       : '',
+//   },
+// }
+
 const body = (): React.ReactElement => {
   const [items, setItems] = useState([])
   const [selectedCheckBox, setselectedCheckBox] = useState<number[]>([])
@@ -52,16 +63,21 @@ const body = (): React.ReactElement => {
 
   // 人口推移のgrafを表示できるように変換するところ  チェックボックスの選択するところが更新されると実行される
   useEffect(() => {
-    let returnValue: any = []
+    return () => {
+      let returnValue: any = []
 
-    selectedCheckBox.map((code) => {
-      console.log(code)
-      const PopulationData = loadedPrefData.get(code)
-      returnValue = [...returnValue, [code, PopulationData]]
-      console.log(loadedPrefData.get(code))
-    })
-    setPopulationData(returnValue)
-  })
+      selectedCheckBox.map((code) => {
+        console.log(code)
+        const PopulationDataconst = loadedPrefData.get(code)
+        returnValue = { ...returnValue, [code]: PopulationDataconst }
+        console.log(loadedPrefData.get(code))
+      })
+
+      // setTimeout(() => {
+      setPopulationData(returnValue)
+      // }, 400)
+    }
+  }, [selectedCheckBox, items])
 
   const options = {
     chart: {
