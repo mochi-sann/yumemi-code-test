@@ -3,33 +3,15 @@ import React, { useState, useEffect } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
-const options = {
-  title: {
-    text: 'My chart',
-  },
-  series: [
-    {
-      type: 'line',
-      data: [1, 2, 10],
-    },
-    {
-      type: 'line',
-      data: [5, 3, 15],
-    },
-    {
-      type: 'line',
-      data: [34, 124, 12],
-    },
-  ],
-}
-
-const body = () => {
-  const [items, setItems] = useState([
-    {
-      prefCode: 1,
-      prefName: '北海道',
-    },
+const body = (): React.ReactElement => {
+  const [items, setItems] = useState([])
+  const [selectedCheckBox, setselectedCheckBox] = useState<number[]>([
+    undefined,
   ])
+  // const [PopulationData, setPopulationData] = useState([])
+  const [loadedPrefData, setLoadedPrefData] = useState(
+    new Map<number, number[]>()
+  )
 
   useEffect(() => {
     fetch('/api/prefList')
@@ -41,8 +23,60 @@ const body = () => {
     //   )
   }, [])
 
+  const handleChange = (checked: boolean, prefCode: number) => {
+    if (checked) {
+      if (!selectedCheckBox.includes(prefCode)) {
+        setselectedCheckBox([...selectedCheckBox, prefCode])
+      }
+      if (!loadedPrefData.has(prefCode)) {
+        fetch('/api/prefPopulation/' + prefCode)
+          .then((res) => res.json())
+          .then((res) => {
+            setLoadedPrefData((oldData) => {
+              const newData = new Map(oldData)
+              newData.set(
+                prefCode,
+                res.response.map((item) => item.value)
+              )
+              return newData
+            })
+            console.log(loadedPrefData)
+          })
+      }
+    } else {
+      setselectedCheckBox(selectedCheckBox.filter((code) => code !== prefCode))
+    }
+  }
+
+  const options = {
+    chart: {
+      type: 'bar',
+    },
+    title: {
+      text: 'Fruit Consumption',
+    },
+    xAxis: {
+      categories: ['Apples', 'Bananas', 'Oranges'],
+    },
+    yAxis: {
+      title: {
+        text: 'Fruit eaten',
+      },
+    },
+    series: [
+      {
+        name: 'Jane',
+        data: [1, 0, 4],
+      },
+      {
+        name: 'John',
+        data: [5, 7, 3],
+      },
+    ],
+  }
+
   return (
-    <div>
+    <>
       <div className="checkBoxs">
         {items.map((lists) => {
           return (
@@ -56,8 +90,7 @@ const body = () => {
               <input
                 type="checkbox"
                 className="PrefNameCheckBox"
-                // checked={this.state.selected[props.prefCode - 1]}
-                // onChange={() => this._changeSelection(props.prefCode - 1)}
+                onChange={(e) => handleChange(e.target.checked, lists.prefCode)}
                 id={'prefCode.' + lists.prefCode}
                 name={'prefCode.' + lists.prefCode}
               />
@@ -66,8 +99,14 @@ const body = () => {
           )
         })}{' '}
       </div>
-
-      <HighchartsReact highcharts={Highcharts} options={options} />
+      <div>{JSON.stringify(selectedCheckBox, null, 2)}</div>
+      <div className="ChartBox">
+        <HighchartsReact
+          className="ChartBody"
+          highcharts={Highcharts}
+          options={options}
+        />
+      </div>
       <style jsx>{`
         .checkBoxs {
           display: flex;
@@ -84,8 +123,11 @@ const body = () => {
         .PrefNameCheckBox {
           cursor: pointer;
         }
+        .ChartBody {
+          width: 100%;
+        }
       `}</style>
-    </div>
+    </>
   )
 }
 

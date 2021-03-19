@@ -9,7 +9,6 @@ export const Home = (): JSX.Element => (
     </Head>
 
     <main>
-      <p>本文が入るところ</p>
       <Body />
     </main>
 
