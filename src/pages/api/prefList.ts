@@ -15,7 +15,7 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
     .then((res) => res.json())
     .then(
       (result) => {
-        console.log('api response')
+        // console.log('api response')
 
         res.status(200).json({ result })
       },

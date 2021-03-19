@@ -21,9 +21,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     .then(
       (result) => {
         // console.log(result.result.data[0].data)
-        console.log('id = ' + id)
+        // console.log('id = ' + id)
 
-        console.log(result.result)
+        // console.log(result.result)
         const response = result.result.data[0].data
 
         res.status(200).json({ response })

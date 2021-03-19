@@ -34,7 +34,7 @@ export const Home = (): JSX.Element => (
       }
 
       main {
-        max-width: 900px;
+        width: 100%;
         padding: 5rem 0;
         flex: 1;
         display: flex;

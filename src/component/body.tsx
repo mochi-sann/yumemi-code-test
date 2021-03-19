@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 // import Highcharts from 'highcharts'
 // import HighchartsReact from 'highcharts-react-official'
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
+// import PrefCodeToPrefName from 'src/lib/prefCodeToPrefName'
 
-import PrefCodeToPrefName from 'src/lib/prefCodeToPrefName'
-import ChartBox from 'src/component/Chart'
 interface APIkeyPrpps {
   headers: { 'X-API-KEY': string }
 }
@@ -19,7 +20,7 @@ const API_key: APIkeyPrpps = {
 const body = (): React.ReactElement => {
   const [items, setItems] = useState([])
   const [selectedCheckBox, setselectedCheckBox] = useState<number[]>([])
-  const [PopulationData, setPopulationData] = useState([])
+  // const [PopulationData, setPopulationData] = useState([])
   const [loadedPrefData, setLoadedPrefData] = useState(
     new Map<number, number[]>()
   )
@@ -57,6 +58,7 @@ const body = (): React.ReactElement => {
               )
               return newData
             })
+
             // ShowgrafDetas()
           })
       }
@@ -68,30 +70,18 @@ const body = (): React.ReactElement => {
     }
     // ShowgrafDetas()
   }
-  const ClickBton = () => {
-    return
-  }
+
   // 人口推移のgrafを表示できるように変換するところ  チェックボックスの選択するところが更新されると実行される
-  useEffect(() => {
-    return () => {
-      let returnValue: any = []
+  // useEffect(() => {
+  const graphData: { name: string; data: number[] }[] = selectedCheckBox
+    .map((code) => items.find((pref) => pref.prefCode === code))
+    .filter((pref) => pref !== undefined && loadedPrefData.has(pref.prefCode))
+    .map((pref) => ({
+      name: pref!.prefName,
+      data: [...loadedPrefData.get(pref!.prefCode)!],
+    }))
 
-      selectedCheckBox.map((code) => {
-        // console.log(code)
-        const PopulationDataconst = loadedPrefData.get(code)
-        // returnValue = { ...returnValue, {code, PopulationDataconst} }
-        returnValue = [
-          ...returnValue,
-          { name: PrefCodeToPrefName(code), data: PopulationDataconst },
-        ]
-        // console.log(loadedPrefData.get(code))
-      })
-
-      // setTimeout(() => {
-      setPopulationData(returnValue)
-      // }, 400)
-    }
-  }, [ClickBton])
+  // }, [ClickBton])
 
   const options = {
     chart: {
@@ -102,32 +92,32 @@ const body = (): React.ReactElement => {
     },
     xAxis: {
       categories: [
-        '1960',
-        '1965',
-        '1970',
-        '1975',
-        '1980',
-        '1985',
-        '1990',
-        '1995',
-        '2000',
-        '2005',
-        '2010',
-        '2015',
-        '2020',
-        '2025',
-        '2030',
-        '2035',
-        '2040',
-        '2045',
+        '1960年',
+        '1965年',
+        '1970年',
+        '1975年',
+        '1980年',
+        '1985年',
+        '1990年',
+        '1995年',
+        '2000年',
+        '2005年',
+        '2010年',
+        '2015年',
+        '2020年',
+        '2025年',
+        '2030年',
+        '2035年',
+        '2040年',
+        '2045年',
       ],
     },
     yAxis: {
       title: {
-        text: 'Fruit eaten',
+        text: '人口',
       },
     },
-    series: PopulationData,
+    series: graphData,
 
     // series: loadedPrefData,
   }
@@ -141,18 +131,12 @@ const body = (): React.ReactElement => {
               <label
                 htmlFor={'prefCode.' + lists.prefCode}
                 className="PrefNameCheckBox"
-                onClick={() => {
-                  ClickBton()
-                }}
               >
                 {lists.prefName}
               </label>{' '}
               <input
                 type="checkbox"
                 className="PrefNameCheckBox"
-                onClick={() => {
-                  ClickBton()
-                }}
                 onChange={(e) => {
                   handleChange(e.target.checked, lists.prefCode)
                 }}
@@ -164,10 +148,15 @@ const body = (): React.ReactElement => {
           )
         })}{' '}
       </div>
-      <div>{JSON.stringify(selectedCheckBox, null, 2)}</div>
-      <pre>{JSON.stringify(PopulationData, null, 2)}</pre>
-      <div className="ChartBox">
-        <ChartBox options={options} />
+      {/* <div>{JSON.stringify(selectedCheckBox, null, 2)}</div>
+      <pre>{JSON.stringify(PopulationData, null, 2)}</pre> */}
+      <div className="checkBody">
+        <HighchartsReact
+          width="100%"
+          className="ChartBody"
+          highcharts={Highcharts}
+          options={options}
+        />
         {/* <HighchartsReact
           className="ChartBody"
           highcharts={Highcharts}
@@ -175,6 +164,9 @@ const body = (): React.ReactElement => {
         /> */}
       </div>
       <style jsx>{`
+        .checkBody {
+          width: 100%;
+        }
         .checkBoxs {
           display: flex;
           justify-content: flex-start;
@@ -185,7 +177,7 @@ const body = (): React.ReactElement => {
         .checkBoxs div {
           flex-wrap: wrap;
 
-          flex-basis: 130px;
+          flex-basis: 100px;
         }
         .PrefNameCheckBox {
           cursor: pointer;
