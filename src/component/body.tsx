@@ -3,16 +3,16 @@ import React, { useState, useEffect } from 'react'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 
-// interface APIkeyPrpps {
-//   headers: { 'X-API-KEY': string }
-// }
-// const API_key: APIkeyPrpps = {
-//   headers: {
-//     'X-API-KEY': process.env.NEXT_PUBLIC_RESAS_API_KEY
-//       ? process.env.NEXT_PUBLIC_RESAS_API_KEY
-//       : '',
-//   },
-// }
+interface APIkeyPrpps {
+  headers: { 'X-API-KEY': string }
+}
+const API_key: APIkeyPrpps = {
+  headers: {
+    'X-API-KEY': process.env.NEXT_PUBLIC_RESAS_API_KEY
+      ? process.env.NEXT_PUBLIC_RESAS_API_KEY
+      : '',
+  },
+}
 
 const body = (): React.ReactElement => {
   const [items, setItems] = useState([])
@@ -23,10 +23,10 @@ const body = (): React.ReactElement => {
   )
 
   useEffect(() => {
-    fetch('/api/prefList')
+    fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', API_key)
       .then((res) => res.json())
       .then((result) => {
-        setItems(result.result.result)
+        setItems(result.result)
         console.log(result)
       })
     //   )
