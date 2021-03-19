@@ -88,7 +88,7 @@ const body = (): React.ReactElement => {
       type: 'line',
     },
     title: {
-      text: '各都道府県の人口推移',
+      text: '各都道府県の人口',
     },
     xAxis: {
       title: {

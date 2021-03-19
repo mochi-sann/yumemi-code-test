@@ -9,6 +9,7 @@ export const Home = (): JSX.Element => (
     </Head>
 
     <main>
+      <h1>各都道府県ごとの人口推移</h1>
       <Body />
     </main>
 
@@ -35,7 +36,7 @@ export const Home = (): JSX.Element => (
 
       main {
         width: 100%;
-        padding: 5rem 0;
+        padding: 1rem 0;
         flex: 1;
         display: flex;
         flex-direction: column;
